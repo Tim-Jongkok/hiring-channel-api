@@ -1,14 +1,14 @@
 
-const fromResponse = require('../helpers/formResponse')
+
 const usersModel = require('../model/users')
-const { response } = require('express')
 const formResponse = require('../helpers/formResponse')
 
 const usersController ={
     showUser:(req, res)=>{
-        usersModel.showUser()
+        const {page, limit} = req.query
+        usersModel.showUser(page, limit)
         .then((data)=>{
-            fromResponse.success(res, data)
+            formResponse.pagination(req, res, data)
         }).catch((err)=>{
             formResponse.error(res, err)
         })
@@ -16,11 +16,40 @@ const usersController ={
     updateUser:(req, res)=>{
         usersModel.updateUser(req.params.id, req.body)
         .then((data)=>{
-            fromResponse.success(res, data)
+            formResponse.success(res, data)
         }).catch((err)=>{
-            fromResponse.error(res, err)
+            console.log(err)
+            formResponse.error(res, err)
         })
-    }
+    },
+    deleteUser:(req, res)=>{
+        usersModel.deleteUser(req.params.id)
+        .then((data)=>{
+            formResponse.success(res, data)
+        }).catch((err)=>{
+            console.log(err)
+            formResponse.error(res, err)
+        })
+    },
+    searchName:(req, res)=>{
+        usersModel.searchName(req.query)
+        .then((data)=>{
+            formResponse.pagination(req, res, data)
+        }).catch((err)=>{
+            console.log(err)
+            formResponse.error(res, err)
+        })
+    },
+    sortUser:(req, res)=>{
+        usersModel.sortUser(req.query)
+        .then((data)=>{
+            formResponse.pagination(req, res, data)
+        }).catch((err)=>{
+            console.log(err)
+            formResponse.error(res, err)
+        })
+    },
+
 
 }
 
