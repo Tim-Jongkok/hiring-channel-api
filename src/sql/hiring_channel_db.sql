@@ -2,10 +2,10 @@
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Sep 01, 2020 at 04:23 PM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.4.6
+-- Host: 127.0.0.1
+-- Generation Time: Sep 02, 2020 at 07:59 PM
+-- Server version: 10.4.13-MariaDB
+-- PHP Version: 7.2.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -81,6 +81,7 @@ CREATE TABLE `users` (
 CREATE TABLE `users_detail` (
   `user_id` int(11) DEFAULT NULL,
   `description` text NOT NULL,
+  `skill` text NOT NULL,
   `field` text NOT NULL,
   `salary` text NOT NULL,
   `rating` int(11) NOT NULL,
