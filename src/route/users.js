@@ -6,7 +6,7 @@ const usersController = require('../controller/users')
 
 usersRouter.get('/', usersController.showUser)
 usersRouter.post('/', )
-usersRouter.patch('/')
+usersRouter.patch('/:id', usersController.updateUser)
 usersRouter.delete('/')
 
 

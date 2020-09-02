@@ -1,4 +1,4 @@
-// require('dotenv/config')
+require('dotenv').config()
 
 const express = require('express') 
 
@@ -11,7 +11,7 @@ const indexRouter = require('./src/route/index')
 
 const app = express()
 
-app.listen(8000, ()=>{
+app.listen(process.env.PORT, ()=>{
     console.log('server is running')
 })
 

@@ -12,6 +12,14 @@ const usersController ={
         }).catch((err)=>{
             formResponse.error(res, err)
         })
+    },
+    updateUser:(req, res)=>{
+        usersModel.updateUser(req.params.id, req.body)
+        .then((data)=>{
+            fromResponse.success(res, data)
+        }).catch((err)=>{
+            fromResponse.error(res, err)
+        })
     }
 
 }
