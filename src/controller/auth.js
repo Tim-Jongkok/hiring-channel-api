@@ -22,16 +22,6 @@ const authController = {
         formResponse.error(res, err, 500);
       });
   },
-  userData: (req, res) => {
-    authModel
-      .userData(req.body)
-      .then((data) => {
-        formResponse.success(res, data, 200);
-      })
-      .catch((err) => {
-        formResponse.error(res, err, 500);
-      });
-  },
 };
 
 module.exports = authController;

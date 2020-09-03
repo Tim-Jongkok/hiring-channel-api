@@ -54,4 +54,4 @@ const userMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = productMiddleware;
+module.exports = userMiddleware;

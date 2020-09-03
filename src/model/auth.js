@@ -5,92 +5,67 @@ const jwt = require("jsonwebtoken");
 const authModel = {
   register: (body) => {
     return new Promise((resolve, reject) => {
-      const { password } = body;
       bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-          reject({ msg: "unknown error" });
-        }
-        bcrypt.hash(password, salt, (err, hashedPassword) => {
-          let registerQuery = "";
-          if (body.notLoggingIn) {
-            registerQuery = "INSERT INTO users SET ?";
-          } else {
-            registerQuery =
-              "INSERT INTO users SET ?;SELECT first_name, last_name, type_id FROM users WHERE users.email=?;";
-          }
-          const { notLoggingIn, ...updatedBody } = body;
-          console.log(updatedBody);
-          if (err) {
-            reject({ msg: "Unknown Error" });
-          }
-          const newBody = { ...updatedBody, password: hashedPassword };
-          database.query(registerQuery, [newBody, body.email], (err, data) => {
-            if (!err) {
-              try {
-                const payload = {
-                  email: body.email,
-                  type_id: body.type_id,
-                };
-                const token = jwt.sign(payload, process.env.SECRET_KEY);
-                const { first_name, last_name, type_id } = data[1][0];
-                const msg = "Account Registered";
-                resolve({ first_name, last_name, type_id, msg, token });
-              } catch (e) {
-                const msg = "Account Registered";
-                resolve({ msg });
-              }
-            } else {
-              reject({ msg: "Account Already Exist" });
+        if (!err) {
+          const { password } = body;
+          bcrypt.hash(password, salt, (error, hashedPassword) => {
+            if (!error) {
+              const newBody = { ...body, password: hashedPassword };
+              const qs = "SELECT email FROM users WHERE email = ?";
+              const newQs = "INSERT INTO users SET ?";
+              database.query(qs, newBody.email, (secondErr, data) => {
+                if (data.length) {
+                  reject({ msg: "User Already Exist" });
+                }
+                if (!data.length) {
+                  database.query(newQs, newBody, (newErr, result) => {
+                    if (!newErr) {
+                      resolve({msg: "Register Success"});
+                    } else {
+                      reject(newErr);
+                    }
+                  });
+                }
+              });
             }
           });
-        });
+        }
       });
     });
   },
   login: (body) => {
     return new Promise((resolve, reject) => {
-      const loginQuery =
-        "SELECT first_name, last_name, email, password, type_id FROM users WHERE email=?;";
-      database.query(loginQuery, [body.email], (err, data) => {
-        if (err) {
-          reject({ msg: "query error" });
-        }
-        if (data.length === 0) {
-          const msg = "User Not Found. Please Register First";
-          reject({ msg });
+      const qs =
+        "SELECT users.email, users.password, users.type_id FROM users WHERE email=?";
+      database.query(qs, body.email, (err, data) => {
+        if (!err) {
+          if (data.length) {
+            bcrypt.compare(body.password, data[0].password, (error, result) => {
+              if (!result) {
+                reject({ msg: "Wrong Password" });
+              } else if (result === true) {
+                const { email } = body;
+                const { type_id } = data[0];
+                const payload = {
+                  email,
+                  type_id,
+                };
+                const token = jwt.sign(payload, process.env.SECRET_KEY);
+                const msg = "Login Success";
+                resolve({ msg, token });
+              } else {
+                reject(error);
+              }
+            });
+          } else {
+            const msg = "User Not Found";
+            reject({ msg, err });
+          }
         } else {
-          bcrypt.compare(body.password, data[0].password, (err, isSame) => {
-            if (err) {
-              reject({ msg: "Unknown Error" });
-            }
-            if (isSame) {
-              const { first_name, last_name, email, type_id } = data[0];
-              const payload = {
-                email,
-                type_id,
-              };
-              const token = jwt.sign(payload, process.env.SECRET_KEY);
-              const msg = "Login Success";
-              resolve({ first_name, last_name, type_id, msg, token });
-            } else {
-              reject({ msg: "Wrong Password" });
-            }
-          });
+          reject(err);
         }
-      });
-    });
-  },
-  userData: (body) => {
-    return new Promise((resolve, reject) => {
-      const userQuery = `SELECT first_name, last_name, type_id FROM users WHERE users.email=?`;
-      database.query(userQuery, [body.email], (err, data) => {
-        if (err) {
-          reject({ msg: "User not found" });
-        }
-        resolve(data);
       });
     });
   },
 };
-
 module.exports = authModel;
