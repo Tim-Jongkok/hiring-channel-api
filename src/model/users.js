@@ -5,7 +5,7 @@ const usersModel = {
     showUser: (page, limit)=>{
         const offset = (page - 1) * limit;
         return new Promise((resolve, reject)=>{
-            const queryStr = `SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users.email, users.password, users.is_open, users_detail.description, users_detail.description, users_detail.field, users_detail.salary, users_detail.rating, users_detail.total_project FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id LIMIT ? OFFSET ?`;
+            const queryStr = `SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users.email, users.password, users.is_open, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id LIMIT ? OFFSET ?`;
             connection.query(queryStr, [Number(limit), offset], (err, data)=>{
                 if(!err){
                     resolve(data)
@@ -53,13 +53,13 @@ const usersModel = {
             })
         })
     },
-    searchName:(query)=>{
+    searchUser:(query)=>{
         const page = query.page;
         const limit = query.limit;
         const offset = (page - 1) * limit;
         const name = query.name;
         return new Promise((resolve, reject)=>{
-            const queryStr =`SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.salary, users_detail.rating, users_detail.total_project  FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id WHERE users.first_name  LIKE "%${name}%" LIMIT ? OFFSET ?`
+            const queryStr =`SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project  FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id WHERE users.first_name OR users.last_name OR users.corporate_name OR users_detail.field OR users_detail.salary OR users_detail.skill LIKE "%${name}%" LIMIT ? OFFSET ?`
             connection.query(queryStr,[Number(limit), offset], (err, data)=>{
                 if(!err){
                     resolve(data)
@@ -76,7 +76,7 @@ const usersModel = {
         const order = query.order;
         const by = query.by;
         return new Promise((resolve, reject)=>{
-            const queryStr =`SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.salary, users_detail.rating, users_detail.total_project  FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id ORDER BY ${by} ${order} LIMIT ? OFFSET ?`
+            const queryStr =`SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project  FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id ORDER BY ${by} ${order} LIMIT ? OFFSET ?`
             connection.query(queryStr,[Number(limit), offset], (err, data)=>{
                 if(!err){
                     resolve(data)

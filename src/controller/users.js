@@ -1,7 +1,7 @@
 
 
 const usersModel = require('../model/users')
-const formResponse = require('../helpers/formResponse')
+const formResponse = require('../helpers/form/formResponse')
 
 const usersController ={
     showUser:(req, res)=>{
@@ -31,8 +31,8 @@ const usersController ={
             formResponse.error(res, err)
         })
     },
-    searchName:(req, res)=>{
-        usersModel.searchName(req.query)
+    searchUser:(req, res)=>{
+        usersModel.searchUser(req.query)
         .then((data)=>{
             formResponse.pagination(req, res, data)
         }).catch((err)=>{
