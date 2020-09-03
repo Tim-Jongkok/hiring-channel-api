@@ -6,7 +6,7 @@ const usersModel = {
   showUser: (page, limit) => {
     const offset = (page - 1) * limit;
     return new Promise((resolve, reject) => {
-      const queryStr = `SELECT users.id, users.first_search, users.last_search, users.corporate_search, type.type_search, users.image, users.email, users.is_open, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id LIMIT ? OFFSET ?`;
+      const queryStr = `SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users.email, users.is_open, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id LIMIT ? OFFSET ?`;
       connection.query(queryStr, [Number(limit), offset], (err, data) => {
         if (!err) {
           resolve(data);
@@ -60,7 +60,7 @@ const usersModel = {
     const offset = (page - 1) * limit;
     const search = query.search;
     return new Promise((resolve, reject) => {
-      const queryStr = `SELECT users.id, users.first_search, users.last_search, users.corporate_search, type.type_search, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id WHERE users.first_search LIKE '%${search}%' OR users.last_search LIKE '%${search}%' OR users.corporate_search LIKE '%${search}%' OR users_detail.field LIKE '%${search}%' OR users_detail.salary LIKE '%${search}%' OR users_detail.skill LIKE '%${search}%' LIMIT ? OFFSET ?`;
+      const queryStr = `SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id WHERE users.first_name LIKE '%${search}%' OR users.last_name LIKE '%${search}%' OR users.corporate_name LIKE '%${search}%' OR users_detail.field LIKE '%${search}%' OR users_detail.salary LIKE '%${search}%' OR users_detail.skill LIKE '%${search}%' LIMIT ? OFFSET ?`;
       connection.query(queryStr, [Number(limit), offset], (err, data) => {
         if (!err) {
           resolve(data);
@@ -76,12 +76,12 @@ const usersModel = {
     const offset = (page - 1) * limit;
     const order = query.order;
     const by = query.by;
-    const type_search = query.type_search;
+    const type_name = query.type_name;
     return new Promise((resolve, reject) => {
-      const queryStr = `SELECT users.id, users.first_search, users.last_search, users.corporate_search, type.type_search, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project  FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id WHERE type.type_search = ? ORDER BY ${by} ${order} LIMIT ? OFFSET ?`;
+      const queryStr = `SELECT users.id, users.first_name, users.last_name, users.corporate_name, type.type_name, users.image, users_detail.description, users_detail.description, users_detail.field, users_detail.skill, users_detail.salary, users_detail.rating, users_detail.total_project  FROM users JOIN type ON users.type_id = type.type_id JOIN users_detail ON users.id = users_detail.user_id WHERE type.type_name = ? ORDER BY ${by} ${order} LIMIT ? OFFSET ?`;
       connection.query(
         queryStr,
-        [type_search, Number(limit), offset],
+        [type_name, Number(limit), offset],
         (err, data) => {
           if (!err) {
             resolve(data);
