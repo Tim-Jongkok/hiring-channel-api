@@ -24,17 +24,8 @@ const usersModel = {
       });
     });
   },
-  showDetailUser: (query, id) => {
-    let queryStr = "";
-    if (query.search === undefined || query.sort_by === undefined) {
-      const offset = (Number(query.page) - 1) * Number(query.limit);
-      queryStr = `${selectQuery} WHERE users.id =? LIMIT ${query.limit} OFFSET ${offset}`;
-    } else {
-      const offset = (Number(query.page) - 1) * Number(query.limit);
-      queryStr = `${selectQuery} WHERE users.first_name LIKE '%${query.search}%' OR users.last_name LIKE '%${query.search}
-  %' OR users.corporate_name LIKE '%${query.search}%' OR users_detail.field LIKE '%${query.search}%' OR users_detail.
-  salary LIKE '%${query.search}%' OR users_detail.skill LIKE '%${query.search}%'  ORDER BY ${query.sort_by} ${query.order} LIMIT ${query.limit} OFFSET ${offset}`;
-    }
+  showDetailUser: (id) => {
+    let queryStr = `${selectQuery} WHERE users.id =? `;
     return new Promise((resolve, reject) => {
       connection.query(queryStr, [id], (err, data) => {
         if (!err) {

@@ -22,15 +22,9 @@ const usersController = {
   },
   showDetailUser: (req, res) => {
     usersModel
-      .showDetailUser(req.query, req.params.id)
+      .showDetailUser(req.params.id)
       .then((data) => {
-        if (data.length !== 0) {
-          formResponse.pagination(req, res, data);
-        } else {
-          res.json({
-            response: `Sorry, ${req.query.search} is not found`,
-          });
-        }
+        formResponse.success(res, data);
       })
       .catch((err) => {
         formResponse.error(res, err);
@@ -55,7 +49,7 @@ const usersController = {
           const responData = {
             ...req.body,
           };
-          formResponse.success(res, responData);
+          formResponse.success(res, data);
         }
       })
       .catch((err) => {
@@ -67,37 +61,13 @@ const usersController = {
     usersModel
       .deleteUser(req.params.id)
       .then((data) => {
-        formResponse.success(res, data);
+        const deleteRespon = {
+          msg: `id ${req.params.id} was sucessfully deleted`,
+        };
+        formResponse.success(res, deleteRespon);
       })
       .catch((err) => {
         console.log(err);
-        formResponse.error(res, err);
-      });
-  },
-  searchUser: (req, res) => {
-    usersModel
-      .searchUser(req.query)
-      .then((data) => {
-        if (data.length !== 0) {
-          formResponse.pagination(req, res, data);
-        } else {
-          res.json({
-            response: `Sorry, ${req.query.search} not found`,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        formResponse.error(res, err);
-      });
-  },
-  searchAndSortUser: (req, res) => {
-    usersModel
-      .searchAndSortUser(req.query)
-      .then((data) => {
-        formResponse.pagination(req, res, data);
-      })
-      .catch((err) => {
         formResponse.error(res, err);
       });
   },

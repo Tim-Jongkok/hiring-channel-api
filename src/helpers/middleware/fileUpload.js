@@ -45,8 +45,13 @@ const uploadImage = {
           msg: err,
         });
       } else {
-        req.body.image = `http://localhost:8000/images/${req.file.filename}`;
-        next();
+        try {
+          req.body.image = `http://localhost:8000/images/${req.file.filename}`;
+        } catch (err) {
+          console.log(err);
+        } finally {
+          next();
+        }
       }
     });
   },
