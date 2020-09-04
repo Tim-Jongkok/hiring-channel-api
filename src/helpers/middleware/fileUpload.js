@@ -1,3 +1,5 @@
+/** @format */
+
 const multer = require("multer");
 const path = require("path");
 
@@ -6,10 +8,10 @@ const storage = multer.diskStorage({
     cb(null, "./public/images");
   },
   filename: (req, file, cb) => {
-    const nameformat = `${Date.now()}-${file.fieldname}${path.extname(
+    const nameFormat = `${Date.now()}-${file.fieldname}${path.extname(
       file.originalname
     )}`;
-    cb(null, nameformat);
+    cb(null, nameFormat);
   },
 });
 
@@ -18,10 +20,8 @@ const limits = {
 };
 
 const fileFilter = (req, file, cb) => {
-  const filetype = /JPG|JPEG|PNG|GIF/;
-  const extname = filetype.test(
-    path.extname(file.originalname).toLocaleUpperCase()
-  );
+  const fileTypes = /jpg|jpeg|png|gif/;
+  const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
   if (extname) {
     cb(null, true);
   } else {
@@ -39,6 +39,7 @@ const uploadImage = {
   singleUpload: (req, res, next) => {
     const singleUpload = upload.single("image");
     singleUpload(req, res, (err) => {
+      console.log(req.file);
       if (err) {
         res.json({
           msg: err,
