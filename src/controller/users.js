@@ -8,13 +8,7 @@ const usersController = {
     usersModel
       .showAllUser(req.query)
       .then((data) => {
-        if (data.length !== 0) {
           formResponse.pagination(req, res, data);
-        } else {
-          res.json({
-            response: `Sorry, ${req.query.search} is not found`,
-          });
-        }
       })
       .catch((err) => {
         formResponse.error(res, err);
@@ -22,7 +16,7 @@ const usersController = {
   },
   showDetailUser: (req, res) => {
     usersModel
-      .showDetailUser(req.params.id)
+      .showDetailUser(req.params.id, req.query)
       .then((data) => {
         formResponse.success(res, data);
       })
