@@ -7,68 +7,25 @@ const authModel = {
     return new Promise((resolve, reject) => {
       bcrypt.genSalt(10, (err, salt) => {
         if (!err) {
-          const {
-            first_name,
-            last_name,
-            corporate_name,
-            type_id,
-            image,
-            email,
-            is_open,
-            password,
-            detail,
-          } = body;
+          const { password } = body;
           bcrypt.hash(password, salt, (error, hashedPassword) => {
             if (!error) {
               const newBody = { ...body, password: hashedPassword };
-              const qs = "SELECT email FROM users WHERE email = ?";
-              // const newQs = "INSERT INTO users SET ?";
-              // const startRegis = "START TRANSACTION;";
-              // const firstQuery = "INSERT INTO users SET first_name=?, last_name=?, corporate_name=?, type_id=?, image=?, email=?, is_open=?;";
-              // const secondQuery =
-              //   "INSERT INTO users_detail (user_id, description, skill, field, salary, rating, total_project) VALUES?;";
-              // const commitRegis = "COMMIT;";
-              const newQs = `START TRANSACTION; INSERT INTO users SET first_name=?, last_name=?, corporate_name=?, type_id=?, image=?, email=?, password=?, is_open=?; INSERT INTO users_detail (user_id, description, skill, field, salary, rating, total_project) VALUES?; COMMIT;`;
-              // const firstQs = `START TRANSACTION; INSERT INTO users SET first_name="awan", last_name="nawa", corporate_name="..", type_id=1, image="..", email="ascsa1111", is_open=1; INSERT INTO users_detail (user_id, description, skill, field, salary, rating, total_project) VALUES (20, "sdvsdvvd", "aincai", "aaaaaaa", "fffff", "sssss", "gggggg"); COMMIT;`
-              // const allQuery =
-              //   startRegis + firstQuery + secondQuery + commitRegis;
-              let arrayOfDetail = detail.map((item) => {
-                return [
-                  item.user_id,
-                  item.description,
-                  item.skill,
-                  item.field,
-                  item.salary,
-                  item.rating,
-                  item.total_project,
-                ];
-              });
-              database.query(qs, newBody.email, (secondErr, data) => {
-                if (data.length) {
+              const qs = `START TRANSACTION; INSERT INTO users SET ?; INSERT INTO users_detail SET user_id = LAST_INSERT_ID(); SELECT id, first_name, last_name, corporate_name, type_id, image FROM users WHERE users.email=?; COMMIT;`;
+              database.query(qs, [newBody, body.email], (err, data) => {
+                if (err) {
                   reject({ msg: "User Already Exist" });
-                }
-                if (!data.length) {
-                  database.query(
-                    newQs,
-                    [
-                      newBody.first_name,
-                      newBody.last_name,
-                      newBody.corporate_name,
-                      newBody.type_id,
-                      newBody.image,
-                      newBody.email,
-                      newBody.password,
-                      newBody.is_open,
-                      arrayOfDetail,
-                    ],
-                    (newErr, result) => {
-                      if (!newErr) {
-                        resolve(result);
-                      } else {
-                        reject(newErr);
-                      }
-                    }
-                  );
+                } else {
+                  const { id } = data[3][0];
+                  const { email } = body;
+                  const { type_id } = data[3][0];
+                  const payload = {
+                    id,
+                    email,
+                    type_id,
+                  };
+                  const token = jwt.sign(payload, process.env.SECRET_KEY);
+                  resolve({ data: data[3][0], msg: "Register Success", token });
                 }
               });
             }
@@ -80,7 +37,7 @@ const authModel = {
   login: (body) => {
     return new Promise((resolve, reject) => {
       const qs =
-        "SELECT users.email, users.password, users.type_id FROM users WHERE email=?";
+        "SELECT users.id, users.email, users.password, users.type_id FROM users WHERE email=?";
       database.query(qs, body.email, (err, data) => {
         if (!err) {
           if (data.length) {
@@ -88,15 +45,17 @@ const authModel = {
               if (!result) {
                 reject({ msg: "Wrong Password" });
               } else if (result === true) {
+                const { id } = data[0];
                 const { email } = body;
                 const { type_id } = data[0];
                 const payload = {
+                  id,
                   email,
                   type_id,
                 };
                 const token = jwt.sign(payload, process.env.SECRET_KEY);
                 const msg = "Login Success";
-                resolve({ msg, token });
+                resolve({ data: data[0], msg, token });
               } else {
                 reject(error);
               }
