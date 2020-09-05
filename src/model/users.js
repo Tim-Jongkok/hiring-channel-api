@@ -25,25 +25,10 @@ const usersModel = {
       });
     });
   },
-  showDetailUser: (id, query) => {
-    const type_name = query.type_name
-    let queryStr = `${selectQuery} WHERE  users.id = ? AND  type.type_name = ?`;
+  showDetailUser: (id) => {
+    let queryStr = `${selectQuery} WHERE users.id = ?`;
     return new Promise((resolve, reject) => {
-      connection.query(queryStr, [id, type_name], (err, data) => {
-        if (!err) {
-          resolve(data);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  },
-
-  addNewUser: (body) => {
-    const { image } = body;
-    return new Promise((resolve, reject) => {
-      const queryStr = `INSERT INTO users SET users.image=?`;
-      connection.query(queryStr, [image], (err, data) => {
+      connection.query(queryStr, [id], (err, data) => {
         if (!err) {
           resolve(data);
         } else {

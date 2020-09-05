@@ -16,22 +16,11 @@ const usersController = {
   },
   showDetailUser: (req, res) => {
     usersModel
-      .showDetailUser(req.params.id, req.query)
+      .showDetailUser(req.params.id)
       .then((data) => {
         formResponse.success(res, data);
       })
       .catch((err) => {
-        formResponse.error(res, err);
-      });
-  },
-  addNewUser: (req, res) => {
-    usersModel
-      .addNewUser(req.body)
-      .then((data) => {
-        formResponse.success(res, data);
-      })
-      .catch((err) => {
-        console.log(err);
         formResponse.error(res, err);
       });
   },
@@ -39,12 +28,12 @@ const usersController = {
     usersModel
       .updateUser(req.params.id, req.body)
       .then((data) => {
-        if (data.affectedRows !== 0) {
           const responData = {
             ...req.body,
+            msg: "Update Sucessfull"
           };
-          formResponse.success(res, data);
-        }
+          formResponse.success(res, responData);
+
       })
       .catch((err) => {
         console.log(err);
