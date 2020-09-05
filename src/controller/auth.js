@@ -1,4 +1,4 @@
-const formResponse = require("../helpers/formResponse");
+const formResponse = require("../helpers/forms/formResponse");
 const authModel = require("../model/auth");
 
 const authController = {
