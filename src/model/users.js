@@ -6,9 +6,13 @@ const selectQuery = `SELECT users.id, users.first_name, users.last_name, users.c
 
 const usersModel = {
   showAllUser: (query) => {
-    const type_name = query.type_name
+    const type_name = query.type_name;
     let queryStr = "";
-    if (query.search === undefined || query.sort_by === undefined || query.order === undefined) {
+    if (
+      query.search === undefined ||
+      query.sort_by === undefined ||
+      query.order === undefined
+    ) {
       const offset = (Number(query.page) - 1) * Number(query.limit);
       queryStr = `${selectQuery} WHERE type.type_name = ? LIMIT ${query.limit} OFFSET ${offset}`;
     } else {
@@ -16,7 +20,7 @@ const usersModel = {
       queryStr = `${selectQuery} WHERE type.type_name = ? AND (users.first_name LIKE '%${query.search}%' OR users.last_name LIKE '%${query.search}%' OR users.corporate_name LIKE '%${query.search}%' OR users_detail.field LIKE '%${query.search}%' OR users_detail.location LIKE '%${query.search}%' OR users_detail.skill LIKE '%${query.search}%') ORDER BY ${query.sort_by} ${query.order} LIMIT ${query.limit} OFFSET ${offset}`;
     }
     return new Promise((resolve, reject) => {
-      connection.query(queryStr,[type_name], (err, data) => {
+      connection.query(queryStr, [type_name], (err, data) => {
         if (!err) {
           resolve(data);
         } else {
