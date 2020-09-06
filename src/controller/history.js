@@ -4,11 +4,29 @@ const historyModel = require("../model/history");
 const formResponse = require("../helpers/form/formResponse");
 
 const historyController = {
-  showHistory: () => {
+  showHistoryById: (req, res) => {
     historyModel
-      .showHistory()
-      .then((data) => {})
-      .catch((err) => {});
+      .showHistoryById(req.params.id)
+      .then((data) => {
+        formResponse.success(res, data);
+      })
+      .catch((err) => {
+        formResponse.error(res, err);
+      });
+  },
+  addToHistory: (req, res) => {
+    historyModel
+      .addToHistory(req.body)
+      .then((data) => {
+        const responData = {
+          ...req.body,
+          // hire_date: moment(Date.now()).format("YYYY-MM-DD"),
+        };
+        formResponse.success(res, responData);
+      })
+      .catch((err) => {
+        formResponse.error(res, err);
+      });
   },
 };
 

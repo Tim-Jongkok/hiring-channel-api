@@ -1,11 +1,11 @@
 /** @format */
 
 const express = require("express");
-const usersRouter = express.Router();
+const historyRouter = express.Router();
 
-const historyController = require("../controller/users");
+const historyController = require("../controller/history");
 
-usersRouter.get("/history", historyController);
-usersRouter.post("/history", historyController);
+historyRouter.get("/history/:id", historyController.showHistoryById);
+historyRouter.post("/history", historyController.addToHistory);
 
 module.exports = historyRouter;
