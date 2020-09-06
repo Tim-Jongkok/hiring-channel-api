@@ -6,8 +6,8 @@ const moment = require("moment");
 const historyModel = {
   showHistoryById: (id) => {
     const nameQuery = `users.first_name, users.last_name`;
-    let queryStr = `SELECT users.corporate_name, history.rating, history.hire_date FROM history JOIN users ON 
-    users.id = history.corporate_id WHERE history.corporate_id = ${id}`;
+    let queryStr = `SELECT CONCAT_WS(' ',users.first_name, users.last_name) AS name, users.corporate_name, history.rating, history.hire_date FROM history JOIN users ON 
+    users.id = history.corporate_id WHERE history.user_id = ${id}`;
     return new Promise((resolve, reject) => {
       connection.query(queryStr, (err, data) => {
         if (!err) {
