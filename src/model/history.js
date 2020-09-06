@@ -19,7 +19,6 @@ const historyModel = {
     });
   },
   addToHistory: (body) => {
-    let hire_date = moment(Date.now()).format("YYYY-MM-DD");
     const { user_id, corporate_id, rating } = body;
     let queryStr = `INSERT INTO history SET history.user_id = ?, history.corporate_id = ?, history.rating = ?, history.hire_date = NOW() `;
     return new Promise((resolve, reject) => {
