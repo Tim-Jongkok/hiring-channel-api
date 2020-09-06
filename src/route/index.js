@@ -8,7 +8,7 @@ const historyRouter = require("./history");
 const authRouter = require("./auth");
 
 router.use("/", usersRouter);
-router.use("/", historyRouter);
+router.use("/history", historyRouter);
 router.use("/auth", authRouter);
 
 module.exports = router;

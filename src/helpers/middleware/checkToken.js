@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const _ = require("underscore");
-const formResponse = require("../formResponse");
+const formResponse = require("../form/formResponse");
 
 const checkToken = {
   isEngineer: (req, res, next) => {
