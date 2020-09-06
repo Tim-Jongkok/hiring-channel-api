@@ -1,14 +1,21 @@
-const express = require('express')
-const usersRouter = express.Router()
+/** @format */
 
-const usersController = require('../controller/users')
+const express = require("express");
+const usersRouter = express.Router();
 
+const usersController = require("../controller/users");
 
-usersRouter.get('/', usersController.showUser)
-usersRouter.post('/', )
-usersRouter.patch('/:id', usersController.updateUser)
-usersRouter.delete('/')
+const uploadImage = require("../helpers/middleware/fileUpload");
 
 
+usersRouter.get("/", usersController.showAllUser);
+usersRouter.get("/user/:id", usersController.showDetailUser);
 
-module.exports = usersRouter
+usersRouter.patch(
+  "/user/:id", 
+  uploadImage.singleUpload,
+  usersController.updateUser
+);
+usersRouter.delete("/user/:id", usersController.deleteUser);
+
+module.exports = usersRouter;

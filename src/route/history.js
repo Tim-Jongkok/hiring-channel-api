@@ -4,7 +4,7 @@ const checkToken = require("../helpers/middlewares/checkToken");
 
 const historyRouter = express.Router();
 
-historyRouter.get("/history", checkToken.isCorporation, historyController.showHistory);
+historyRouter.get("/history:id", checkToken.isCorporation, historyController.showHistory);
 historyRouter.post("/history", historyController.addToHistory);
 
 module.exports = historyRouter;

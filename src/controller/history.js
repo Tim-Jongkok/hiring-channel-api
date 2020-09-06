@@ -1,25 +1,31 @@
+/** @format */
+
 const historyModel = require("../model/history");
-const formResponse = require("../helpers/forms/formResponse");
+const formResponse = require("../helpers/form/formResponse");
 
 const historyController = {
-  showHistory: (_, res) => {
+  showHistoryById: (req, res) => {
     historyModel
-      .showHistory()
+      .showHistoryById(req.params.id)
       .then((data) => {
-        formResponse.success(res, data, 200);
+        formResponse.success(res, data);
       })
       .catch((err) => {
-        formResponse.error(res, err, 500);
+        formResponse.error(res, err);
       });
   },
   addToHistory: (req, res) => {
     historyModel
       .addToHistory(req.body)
       .then((data) => {
-        formResponse.success(res, data, 200);
+        const responData = {
+          ...req.body,
+          // hire_date: moment(Date.now()).format("YYYY-MM-DD"),
+        };
+        formResponse.success(res, responData);
       })
       .catch((err) => {
-        formResponse.error(res, err, 500);
+        formResponse.error(res, err);
       });
   },
 };

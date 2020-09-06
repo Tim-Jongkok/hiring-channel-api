@@ -1,12 +1,15 @@
+/** @format */
+
 const connection = require("../config/config");
 const moment = require("moment");
 
 const historyModel = {
-  showHistory: () => {
+  showHistoryById: (id) => {
     const nameQuery = `users.first_name, users.last_name`;
-    let qs = `SELECT ${nameQuery}, users.corporate_name, history.rating, history.hire_date FROM history JOIN users ON user.id = history.user_id AND history.corporate_id`;
+    let queryStr = `SELECT CONCAT_WS(' ',users.first_name, users.last_name) AS name, users.corporate_name, history.rating, history.hire_date FROM history JOIN users 
+    ON users.id = history.user_id OR users.id = history.corporate_id WHERE history.user_id = ${id} OR history.corporate_id = ${id}`;
     return new Promise((resolve, reject) => {
-      connection.query((err, data) => {
+      connection.query(queryStr, (err, data) => {
         if (!err) {
           resolve(data);
         } else {
@@ -16,12 +19,12 @@ const historyModel = {
     });
   },
   addToHistory: (body) => {
-    let date = moment(Date.now()).format("YYYY-MM-DD");
+    let hire_date = moment(Date.now()).format("YYYY-MM-DD");
     const { user_id, corporate_id, rating } = body;
-    let qs = `INSERT INTO history SET history.user_id = ?, history.corporate_id = ?, history.rating = ?, history.hire_date = NOW() `;
+    let queryStr = `INSERT INTO history SET history.user_id = ?, history.corporate_id = ?, history.rating = ?, history.hire_date = NOW() `;
     return new Promise((resolve, reject) => {
       connection.query(
-        qs,
+        queryStr,
         [user_id, corporate_id, rating],
         (err, data) => {
           if (!err) {
