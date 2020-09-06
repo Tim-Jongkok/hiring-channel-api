@@ -16,9 +16,8 @@ const authModel = {
                 if (err) {
                   reject({ msg: "User Already Exist" });
                 } else {
-                  const { id } = data[3][0];
+                  const { id, type_id } = data[3][0];
                   const { email } = body;
-                  const { type_id } = data[3][0];
                   const payload = {
                     id,
                     email,
@@ -54,7 +53,7 @@ const authModel = {
                 };
                 const token = jwt.sign(payload, process.env.SECRET_KEY);
                 const msg = "Login Success";
-                resolve({ msg, id, first_name, last_name, image, token });
+                resolve({ msg, id, first_name, last_name, type_id, image, token });
               } else {
                 reject(error);
               }
