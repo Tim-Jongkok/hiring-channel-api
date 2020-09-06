@@ -1,11 +1,10 @@
-/** @format */
-
 const express = require("express");
+const historyController = require("../Controllers/history");
+const checkToken = require("../helpers/middlewares/checkToken");
+
 const historyRouter = express.Router();
 
-const historyController = require("../controller/history");
-
-historyRouter.get("/history/:id", historyController.showHistoryById);
+historyRouter.get("/history:id", checkToken.isCorporation, historyController.showHistory);
 historyRouter.post("/history", historyController.addToHistory);
 
 module.exports = historyRouter;
